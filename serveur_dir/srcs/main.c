@@ -6,12 +6,13 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:20:57 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/13 19:19:22 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/14 17:50:51 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sys/socket.h>
 #include <netdb.h>
+#include <sys/stat.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "serveur.h"
@@ -51,12 +52,19 @@ int		main(int ac, char **av)
 	}
 	port = ft_atoi(av[1]);
 	sock = create_server(port);
-	cs = accept(sock, (struct sockaddr *)&csin, &cslen);
-	while ((r = read(cs, buf, 1023)) > 0)
+	mkdir("./MY_SERVER", 07777);
+	chdir("./MY_SERVER");
+	while (42)
 	{
-		buf[r] = 0;
-		ft_putstr(buf);
-		write(1, "\n", 1);
+		cs = accept(sock, (struct sockaddr *)&csin, &cslen);
+		if (fork() == 0)
+		{
+			r = read(cs, buf, 1023);	
+			buf[r] = 0;
+			write(1, buf, r);
+			close(cs);
+			return (0);
+		}
 	}
 	close(cs);
 	close(sock);
