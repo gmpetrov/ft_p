@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:17:46 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/14 17:55:47 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/14 20:46:56 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ int		main(int ac, char **av)
 	int					sock;
 	int					r;
 	char				buf[1024];
+	int					t;
 
 	if (ac != 3)
 	{
@@ -50,9 +51,14 @@ int		main(int ac, char **av)
 	while (42)
 	{
 		sock = create_client(av[1], port);
+		write(1, "[client]-> ", 11);
 		r = read(0, buf, 1023);
 		buf[r] = 0;
 		write(sock, buf, r);
+		t = read(sock, buf, 1023);
+		buf[t] = 0;
+		write(1, buf, t);
+		write(1, "\n", 1);
 	}
 	close(sock);
 	return (0);

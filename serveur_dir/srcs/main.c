@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:20:57 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/14 17:50:51 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/14 20:46:55 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,20 +30,72 @@ int		create_server(int port)
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(port);
 	sin.sin_addr.s_addr = htonl(INADDR_ANY);
-	bind(sock, (const struct sockaddr *)&sin, sizeof(sin));
+	if (bind(sock, (const struct sockaddr *)&sin, sizeof(sin)) == -1)
+	{
+		ft_putstr("[ERROR] - BIND\n");
+		exit(0);
+	}
 	listen(sock, 42);
 	return (sock);	
 }
 
+void	ls(int cs)
+{
+	send(cs, "SUCCESS", 7, MSG_OOB);
+}
+
+void	cd(int cs)
+{
+	send(cs, "SUCCESS", 7, MSG_OOB);
+}
+
+void	get(int cs)
+{
+	send(cs, "SUCCESS", 7, MSG_OOB);
+}
+
+void	put(int cs)
+{
+	send(cs, "SUCCESS", 7, MSG_OOB);
+}
+
+void	pwd(int cs)
+{
+	send(cs, "SUCCESS", 7, MSG_OOB);
+}
+
+void	quit(int cs)
+{
+	send(cs, "SUCCESS", 7, MSG_OOB);
+}
+
+void	action(t_data *data)
+{
+	data->r = read(data->cs, data->buf, 1023);	
+	data->buf[data->r] = 0;
+	write(1, data->buf, data->r);
+	if (ft_strncmp(data->buf, "ls", 2) == 0)
+		ls(data->cs);
+	else if (ft_strncmp(data->buf, "cd", 2) == 0)
+		cd(data->cs);
+	else if (ft_strncmp(data->buf, "get", 3) == 0)
+		get(data->cs);
+	else if	(ft_strncmp(data->buf, "put", 3) == 0)
+		put(data->cs);
+	else if (ft_strncmp(data->buf, "pwd", 3) == 0)
+		pwd(data->cs);
+	else if (ft_strncmp(data->buf, "quit", 4) == 0)
+		quit(data->cs);
+	else
+		send(data->cs, "ERROR", 6, MSG_OOB);
+	close(data->cs);
+}
+
 int		main(int ac, char **av)
 {
+	t_data				data;
 	int					port;
 	int					sock;
-	int					cs;
-	unsigned int		cslen;
-	struct sockaddr_in	csin;	
-	int					r;
-	char				buf[1024];
 
 	if (ac != 2)
 	{
@@ -56,17 +108,14 @@ int		main(int ac, char **av)
 	chdir("./MY_SERVER");
 	while (42)
 	{
-		cs = accept(sock, (struct sockaddr *)&csin, &cslen);
+		data.cs = accept(sock, (struct sockaddr *)&data.csin, &data.cslen);
 		if (fork() == 0)
 		{
-			r = read(cs, buf, 1023);	
-			buf[r] = 0;
-			write(1, buf, r);
-			close(cs);
+			action(&data);
 			return (0);
 		}
 	}
-	close(cs);
+	close(data.cs);
 	close(sock);
 	return (0);
 }
