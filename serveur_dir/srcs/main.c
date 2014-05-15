@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:20:57 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/15 17:35:02 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/15 19:04:52 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,18 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "serveur.h"
+
+t_pwd	*pwd_init(void)
+{
+	static t_pwd	*pwd = NULL;
+
+	if (pwd == NULL)
+	{
+		pwd = (t_pwd *)malloc(sizeof(t_pwd));
+		pwd->test = 1;
+	}
+	return (pwd);
+}
 
 int		create_server(int port)
 {
@@ -54,7 +66,7 @@ void	free_tab(char ***tab)
 	}
 	free(*tab);
 }
-#include <stdio.h>
+
 void	ls(int cs, char *buf)
 {
 	char			**tab;
@@ -67,12 +79,8 @@ void	ls(int cs, char *buf)
 		send(cs, "SUCCESS\n", 8, MSG_OOB);
 		dir = opendir(".");
 		while ((sd = readdir(dir)) != NULL)
-		{
 			send(cs, sd->d_name, ft_strlen(sd->d_name) + 1, MSG_OOB);
-			send(cs, "\t", 1, MSG_OOB);
-		}
 		closedir(dir);
-//		write(1, "\n", 1);
 	}
 	else
 		send(cs, "ERROR", 6, MSG_OOB);
@@ -97,10 +105,53 @@ void	put(int cs, char *buf)
 	send(cs, "SUCCESS", 7, MSG_OOB);
 }
 
-void	pwd(int cs, char *buf)
+char	*get_pwd(char **env)
 {
-	(void)buf;
+	int		i;
+	char	*pwd;
+	int		j;
+	int		k;
+
+	i = 0;
+	j = 4;
+	k = 0;
+	while (env[i])
+	{
+		if (ft_strncmp(env[i], "PWD", 3) == 0)
+		{
+			pwd = (char *)malloc(sizeof(env[i]));
+			while (env[i][j] != 0)
+			{
+				pwd[k] = env[i][j];
+				k++;
+				j++;
+			}
+			pwd[k] = 0;
+			return (pwd);
+		}
+		i++;
+	}
+	return (NULL);
+}
+
+void	pwd(int cs, char *buf, char **env)
+{
+	t_pwd	*struct_pwd;
+	char	**tab;
+
+	tab = ft_strsplit(buf, ' ');
+	if (ft_strcmp(tab[0], "pwd") != 0)
+	{
+		send(cs, "ERROR", 6, MSG_OOB);
+		free_tab(&tab);
+		return ;
+	}
+	struct_pwd = pwd_init();	
 	send(cs, "SUCCESS", 7, MSG_OOB);
+	if (!struct_pwd->pwd)
+		struct_pwd->pwd = get_pwd(env);
+	send(cs, struct_pwd->pwd, ft_strlen(struct_pwd->pwd) + 1, MSG_OOB);
+	free_tab(&tab);
 }
 
 void	quit(int cs, char *buf)
@@ -109,7 +160,7 @@ void	quit(int cs, char *buf)
 	send(cs, "SUCCESS", 7, MSG_OOB);
 }
 
-void	action(t_data *data)
+void	action(t_data *data, char **env)
 {
 	data->r = read(data->cs, data->buf, 1023);	
 	data->buf[data->r - 1] = 0;
@@ -123,7 +174,7 @@ void	action(t_data *data)
 	else if	(ft_strncmp(data->buf, "put", 3) == 0)
 		put(data->cs, data->buf);
 	else if (ft_strncmp(data->buf, "pwd", 3) == 0)
-		pwd(data->cs, data->buf);
+		pwd(data->cs, data->buf, env);
 	else if (ft_strncmp(data->buf, "quit", 4) == 0)
 		quit(data->cs, data->buf);
 	else
@@ -132,7 +183,7 @@ void	action(t_data *data)
 	close(data->cs);
 }
 
-int		main(int ac, char **av)
+int		main(int ac, char **av, char **env)
 {
 	t_data				data;
 	int					port;
@@ -152,7 +203,7 @@ int		main(int ac, char **av)
 		data.cs = accept(sock, (struct sockaddr *)&data.csin, &data.cslen);
 		if (fork() == 0)
 		{
-			action(&data);
+			action(&data, env);
 			return (0);
 		}
 	}
