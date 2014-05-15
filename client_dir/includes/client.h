@@ -6,12 +6,18 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:16:38 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/13 18:17:24 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/15 15:32:57 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CLIENT_H
 # define CLIENT_H
+
+/*
+**	MACRO
+*/
+
+# define END	"\007"
 
 # include "libft.h"
 

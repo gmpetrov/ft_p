@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:17:46 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/14 20:46:56 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/15 15:43:58 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,17 @@ int		main(int ac, char **av)
 		r = read(0, buf, 1023);
 		buf[r] = 0;
 		write(sock, buf, r);
-		t = read(sock, buf, 1023);
-		buf[t] = 0;
-		write(1, buf, t);
-		write(1, "\n", 1);
+		while ((t = recv(sock, buf, sizeof(buf), 0)) > 0)
+		{
+			buf[t] = 0;
+			if (ft_strcmp(buf, END) == 0)
+				break ;
+//			if (ft_strcmp(buf, "ERROR") == 0)
+//				ft_putstr("\033[31m");
+			write(1, buf, t);
+			write(1, "\n", 1);
+//			ft_putstr("\033[0m");
+		}
 	}
 	close(sock);
 	return (0);
