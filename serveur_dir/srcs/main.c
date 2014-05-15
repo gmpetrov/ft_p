@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:20:57 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/15 15:42:55 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/15 16:01:31 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	ls(int cs, char *buf)
 		dir = opendir(".");
 		while ((sd = readdir(dir)) != NULL)
 		{
-			send(cs, sd->d_name, ft_strlen(sd->d_name), MSG_OOB);
+			send(cs, sd->d_name, ft_strlen(sd->d_name) + 1, MSG_OOB);
 			send(cs, "\t", 1, MSG_OOB);
 		}
 		closedir(dir);
@@ -77,7 +77,6 @@ void	ls(int cs, char *buf)
 	else
 		send(cs, "ERROR", 6, MSG_OOB);
 	free_tab(&tab);
-	send(cs, END, 3, MSG_OOB);
 }
 
 void	cd(int cs, char *buf)
@@ -129,7 +128,7 @@ void	action(t_data *data)
 		quit(data->cs, data->buf);
 	else
 		send(data->cs, "ERROR", 6, MSG_OOB);
-	send(data->cs, END, 3, MSG_OOB);
+	send(data->cs, END, 4, MSG_OOB);
 	close(data->cs);
 }
 
