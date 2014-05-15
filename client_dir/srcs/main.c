@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:17:46 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/15 17:43:28 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/15 20:06:50 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,8 @@ int		main(int ac, char **av)
 		while ((t = recv(sock, buf, sizeof(buf), 0)) > 0)
 		{
 			buf[t] = 0;
-			if (ft_strcmp(buf, END) == 0)
+			if (ft_strcmp(buf, END) == 0 || (ft_strcmp(buf, "\n") == 0)
+					|| (ft_strcmp(buf, "") == 0))
 				break ;
 //			if (ft_strcmp(buf, "ERROR") == 0)
 //				ft_putstr("\033[31m");

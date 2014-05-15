@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:20:57 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/15 19:04:52 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/15 20:09:34 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,10 +87,38 @@ void	ls(int cs, char *buf)
 	free_tab(&tab);
 }
 
+void	cd_folder(int cs, char *folder)
+{
+	char	*path;
+	t_pwd	*struct_pwd;
+
+	struct_pwd = pwd_init();
+	path = (char *)malloc(sizeof(ft_strlen(struct_pwd->pwd) + ft_strlen(folder) + 1));
+	path = ft_strcpy(path, struct_pwd->pwd);
+	path = ft_strcat(path, "/");
+	path = ft_strcat(path, folder);	
+	if (chdir(path))	
+		send(cs, "SUCCESS\n", 8, MSG_OOB);
+	else	
+		send(cs, "ERROR", 6, MSG_OOB);
+	write(1, "test\n", 5);
+}
+
 void	cd(int cs, char *buf)
 {
-	(void)buf;
-	send(cs, "SUCCESS", 7, MSG_OOB);
+	char	**tab;
+
+	tab = ft_strsplit(buf, ' ');
+	if (ft_strcmp(tab[0], "cd") != 0)
+	{
+		send(cs, "ERROR", 6, MSG_OOB);
+		free_tab(&tab);
+		return ;
+	}
+	if (tab[1] && ft_strcmp(tab[1], "..") != 0)
+		cd_folder(cs, tab[1]);
+//	send(cs, "SUCCESS", 7, MSG_OOB);
+	free_tab(&tab);
 }
 
 void	get(int cs, char *buf)
@@ -147,7 +175,7 @@ void	pwd(int cs, char *buf, char **env)
 		return ;
 	}
 	struct_pwd = pwd_init();	
-	send(cs, "SUCCESS", 7, MSG_OOB);
+	send(cs, "SUCCESS\n", 8, MSG_OOB);
 	if (!struct_pwd->pwd)
 		struct_pwd->pwd = get_pwd(env);
 	send(cs, struct_pwd->pwd, ft_strlen(struct_pwd->pwd) + 1, MSG_OOB);

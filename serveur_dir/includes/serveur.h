@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:19:58 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/15 18:55:04 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/15 19:14:31 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,15 @@ typedef struct			s_data
 	int					r;
 	char				buf[1024];
 }						t_data;
+
+/*
+**	PROTOTYPES
+*/
+
+
+void	free_tab(char ***tab);
+char	*get_pwd(char **env);
+int		create_server(int port);
+t_pwd	*pwd_init(void);
 
 #endif
