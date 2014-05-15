@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:20:57 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/15 16:01:31 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/15 17:35:02 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ void	action(t_data *data)
 		quit(data->cs, data->buf);
 	else
 		send(data->cs, "ERROR", 6, MSG_OOB);
-	send(data->cs, END, 4, MSG_OOB);
+	send(data->cs, END, 4, 0);
 	close(data->cs);
 }
 
