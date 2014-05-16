@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/16 20:46:33 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/16 21:08:13 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/16 21:39:47 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,12 @@ void	cd_folder(int cs, char *folder)
 		send(cs, "\033[32mSUCCESS\033[0m\n", 19, MSG_OOB);
 	else		
 		send(cs, "\033[31mERROR\033[0m\n", 17, MSG_OOB);
+}
+
+void	cd_minus(int cs)
+{
+	send(cs, "\033[32mSUCCESS\033[0m\n", 19, MSG_OOB);
+	chdir("..");
 }
 
 void	cd(int cs, char *buf)
@@ -33,8 +39,10 @@ void	cd(int cs, char *buf)
 	}
 	if (tab[1] && ft_strcmp(tab[1], "..") != 0)
 		cd_folder(cs, tab[1]);
-	if (tab)
-		free_tab(&tab);
+	else if (tab[1] && ft_strcmp(tab[1], "..") == 0)
+		cd_minus(cs);
+//	if (tab)
+//		free_tab(&tab);
 }
 
 

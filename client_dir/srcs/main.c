@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:17:46 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/16 20:34:39 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/16 21:30:27 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,9 @@ int		main(int ac, char **av)
 		return (0);
 	} 
 	port = ft_atoi(av[2]);
+	sock = create_client(av[1], port);
 	while (42)
 	{
-		sock = create_client(av[1], port);
 		write(1, "\033[33m[client]-> \033[0m", 20);
 		r = read(0, buf, 1023);
 		buf[r] = 0;

@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:20:57 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/16 21:05:45 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/16 21:33:52 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,26 +67,41 @@ void	quit(int cs, char *buf)
 
 void	action(t_data *data, char **env)
 {
-	data->r = read(data->cs, data->buf, 1023);	
-	data->buf[data->r - 1] = 0;
-	write(1, data->buf, data->r);
-	write(1, "\n", 1);
-	if (ft_strncmp(data->buf, "ls", 2) == 0)
-		ls(data->cs, data->buf);
-	else if (ft_strncmp(data->buf, "cd", 2) == 0)
-		cd(data->cs, data->buf);
-	else if (ft_strncmp(data->buf, "get", 3) == 0)
-		get(data->cs, data->buf);
-	else if	(ft_strncmp(data->buf, "put", 3) == 0)
-		put(data->cs, data->buf);
-	else if (ft_strncmp(data->buf, "pwd", 3) == 0)
-		pwd(data->cs, data->buf, env);
-	else if (ft_strcmp(data->buf, "quit") == 0)
-		quit(data->cs, data->buf);
-	else
-		send(data->cs, "\033[31mERROR\033[0m\n", 17, MSG_OOB);
-	send(data->cs, END, 2, 0);
+	while (42)
+	{
+		data->r = read(data->cs, data->buf, 1023);	
+		data->buf[data->r - 1] = 0;
+		write(1, data->buf, data->r);
+		write(1, "\n", 1);
+		if (ft_strncmp(data->buf, "ls", 2) == 0)
+			ls(data->cs, data->buf);
+		else if (ft_strncmp(data->buf, "cd", 2) == 0)
+			cd(data->cs, data->buf);
+		else if (ft_strncmp(data->buf, "get", 3) == 0)
+			get(data->cs, data->buf);
+		else if	(ft_strncmp(data->buf, "put", 3) == 0)
+			put(data->cs, data->buf);
+		else if (ft_strncmp(data->buf, "pwd", 3) == 0)
+			pwd(data->cs, data->buf, env);
+		else if (ft_strcmp(data->buf, "quit") == 0)
+			quit(data->cs, data->buf);
+		else
+			send(data->cs, "\033[31mERROR\033[0m\n", 17, MSG_OOB);
+		send(data->cs, END, 2, 0);
+	}
 //	close(data->cs);
+}
+
+void	do_fork(t_data data, char **env, int sock)
+{
+	data.cs = accept(sock, (struct sockaddr *)&data.csin, &data.cslen);
+	if (fork() == 0)
+	{
+		action(&data, env);
+	}
+	else
+		do_fork(data, env, sock);
+	
 }
 
 int		main(int ac, char **av, char **env)
@@ -104,15 +119,7 @@ int		main(int ac, char **av, char **env)
 	sock = create_server(port);
 	mkdir("./MY_SERVER", 07777);
 	//chdir("./MY_SERVER");
-	while (42)
-	{
-		data.cs = accept(sock, (struct sockaddr *)&data.csin, &data.cslen);
-		if (fork() == 0)
-		{
-			action(&data, env);
-			exit(0);
-		}
-	}
+	do_fork(data, env, sock);
 	close(data.cs);
 	close(sock);
 	return (0);
