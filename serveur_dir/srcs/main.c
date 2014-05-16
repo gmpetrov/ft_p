@@ -87,7 +87,7 @@ void	action(t_data *data, char **env)
 		else if (ft_strcmp(data->buf, "quit") == 0)
 			quit(data->cs, data->buf);
 		else
-			send(data->cs, "\033[31mERROR\033[0m\n", 17, MSG_OOB);
+	        error_not_found(data->cs);
 		send(data->cs, END, 2, 0);
 	}
 }
