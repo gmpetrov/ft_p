@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:20:57 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/16 23:18:02 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/16 23:30:55 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,9 +96,7 @@ void	do_fork(t_data data, char **env, int sock)
 {
 	data.cs = accept(sock, (struct sockaddr *)&data.csin, &data.cslen);
 	if (fork() == 0)
-	{
 		action(&data, env);
-	}
 	else
 		do_fork(data, env, sock);
 	
