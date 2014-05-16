@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/16 20:42:17 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/16 20:43:29 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/16 23:03:10 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ void	pwd(int cs, char *buf, char **env)
 
 	(void)env;
 	tab = ft_strsplit(buf, ' ');
-	if (ft_strcmp(tab[0], "pwd") != 0)
-	{	
-		send(cs, "\033[31mERROR\033[0m\n", 17, MSG_OOB);
+	if (ft_strcmp(tab[0], "pwd") != 0 || (ft_strcmp(tab[0], "pwd") == 0 && tab[1]))
+	{
+		error_not_found(cs);
 		free_tab(&tab);
 		return ;
 	}

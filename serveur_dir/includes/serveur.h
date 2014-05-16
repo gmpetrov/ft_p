@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:19:58 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/16 22:40:44 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/16 23:02:17 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ typedef struct			s_data
 **	tools.c
 */
 void	free_tab(char ***tab);
+void	error_not_found(int cs);
 
 /*
 **	pwd.c

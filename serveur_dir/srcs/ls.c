@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/16 20:51:54 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/16 20:52:13 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/16 23:05:59 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	ls(int cs, char *buf)
 	struct dirent	*sd;
 	
 	tab = ft_strsplit(buf, ' ');
-	if (ft_strcmp(tab[0], "ls") == 0)
+	if (ft_strcmp(tab[0], "ls") == 0 && !tab[1])
 	{
 		send(cs, "\033[32mSUCCESS\033[0m\n", 19, MSG_OOB);
 		dir = opendir(".");
@@ -31,6 +31,6 @@ void	ls(int cs, char *buf)
 		closedir(dir);
 	}
 	else	
-		send(cs, "\033[31mERROR\033[0m\n", 17, MSG_OOB);
-	free_tab(&tab);
+		error_not_found(cs);
+//	free_tab(&tab); PB malloc
 }

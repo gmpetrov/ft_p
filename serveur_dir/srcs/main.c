@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:20:57 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/16 22:08:38 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/16 22:43:08 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,6 @@ void	action(t_data *data, char **env)
 			send(data->cs, "\033[31mERROR\033[0m\n", 17, MSG_OOB);
 		send(data->cs, END, 2, 0);
 	}
-//	close(data->cs);
 }
 
 void	do_fork(t_data data, char **env, int sock)
