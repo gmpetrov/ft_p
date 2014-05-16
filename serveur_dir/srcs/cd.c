@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/16 20:46:33 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/16 20:49:56 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/16 21:08:13 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ void	cd(int cs, char *buf)
 	}
 	if (tab[1] && ft_strcmp(tab[1], "..") != 0)
 		cd_folder(cs, tab[1]);
-	free_tab(&tab);
+	if (tab)
+		free_tab(&tab);
 }
 
 

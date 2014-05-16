@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:20:57 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/16 21:03:52 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/16 21:05:45 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ int		main(int ac, char **av, char **env)
 		if (fork() == 0)
 		{
 			action(&data, env);
-			return (0);
+			exit(0);
 		}
 	}
 	close(data.cs);
