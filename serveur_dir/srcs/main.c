@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:20:57 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/16 18:22:03 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/16 19:00:11 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	ls(int cs, char *buf)
 	tab = ft_strsplit(buf, ' ');
 	if (ft_strcmp(tab[0], "ls") == 0)
 	{
-		send(cs, "SUCCESS\n", 8, MSG_OOB);
+		send(cs, "SUCCESS\n", 9, MSG_OOB);
 		dir = opendir(".");
 		while ((sd = readdir(dir)) != NULL)
 		{
@@ -103,7 +103,7 @@ void	cd_folder(int cs, char *folder)
 	if (chdir(path))	
 		send(cs, "SUCCESS\n", 8, MSG_OOB);
 	else	
-		send(cs, "ERROR", 6, MSG_OOB);
+		send(cs, "ERROR\n", 7, MSG_OOB);
 	write(1, "test\n", 5);
 }
 
@@ -114,7 +114,7 @@ void	cd(int cs, char *buf)
 	tab = ft_strsplit(buf, ' ');
 	if (ft_strcmp(tab[0], "cd") != 0)
 	{
-		send(cs, "ERROR", 6, MSG_OOB);
+		send(cs, "ERROR\n", 7, MSG_OOB);
 		free_tab(&tab);
 		return ;
 	}
@@ -127,13 +127,13 @@ void	cd(int cs, char *buf)
 void	get(int cs, char *buf)
 {
 	(void)buf;
-	send(cs, "SUCCESS", 7, MSG_OOB);
+	send(cs, "SUCCESS\n", 8, MSG_OOB);
 }
 
 void	put(int cs, char *buf)
 {
 	(void)buf;
-	send(cs, "SUCCESS", 7, MSG_OOB);
+	send(cs, "SUCCESS\n", 8, MSG_OOB);
 }
 
 char	*get_pwd(char **env)
@@ -167,7 +167,6 @@ char	*get_pwd(char **env)
 
 void	pwd(int cs, char *buf, char **env)
 {
-//	t_pwd	*struct_pwd;
 	char	**tab;
 	char	buffer[1024];
 	char	*boo;
@@ -176,27 +175,21 @@ void	pwd(int cs, char *buf, char **env)
 	tab = ft_strsplit(buf, ' ');
 	if (ft_strcmp(tab[0], "pwd") != 0)
 	{
-		send(cs, "ERROR", 6, MSG_OOB);
+		send(cs, "ERROR\n", 7, MSG_OOB);
 		free_tab(&tab);
 		return ;
 	}
-//	struct_pwd = pwd_init();	
-	send(cs, "SUCCESS\n", 8, MSG_OOB);
-	/*
-	if (!struct_pwd->pwd)
-		struct_pwd->pwd = getcwd(buffer, 1024);
-		*/
+	send(cs, "SUCCESS\n", 9, MSG_OOB);
 	boo = getcwd(buffer, 1024);
-//	send(cs, struct_pwd->pwd, ft_strlen(struct_pwd->pwd) + 1, MSG_OOB);
 	send(cs, boo, ft_strlen(boo) + 1, MSG_OOB);
-//	write(cs, struct_pwd->pwd, ft_strlen(struct_pwd->pwd));
+	send(cs, "\n", 2, MSG_OOB);
 	free_tab(&tab);
 }
 
 void	quit(int cs, char *buf)
 {
 	(void)buf;
-	send(cs, "SUCCESS", 7, MSG_OOB);
+	send(cs, "SUCCESS\n", 8, MSG_OOB);
 }
 
 void	action(t_data *data, char **env)
@@ -218,7 +211,7 @@ void	action(t_data *data, char **env)
 	else if (ft_strncmp(data->buf, "quit", 4) == 0)
 		quit(data->cs, data->buf);
 	else
-		send(data->cs, "ERROR", 6, MSG_OOB);
+		send(data->cs, "ERROR\n", 7, MSG_OOB);
 	send(data->cs, END, 4, 0);
 	close(data->cs);
 }
