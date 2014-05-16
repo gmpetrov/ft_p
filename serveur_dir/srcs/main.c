@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:20:57 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/16 19:16:24 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/16 20:35:54 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	ls(int cs, char *buf)
 	tab = ft_strsplit(buf, ' ');
 	if (ft_strcmp(tab[0], "ls") == 0)
 	{
-		send(cs, "\033[32mSUCCESS\033[0m\n", 20, MSG_OOB);
+		send(cs, "\033[32mSUCCESS\033[0m\n", 19, MSG_OOB);
 		dir = opendir(".");
 		while ((sd = readdir(dir)) != NULL)
 		{
@@ -92,19 +92,10 @@ void	ls(int cs, char *buf)
 
 void	cd_folder(int cs, char *folder)
 {
-	char	*path;
-	t_pwd	*struct_pwd;
-
-	struct_pwd = pwd_init();
-	path = (char *)malloc(sizeof(ft_strlen(struct_pwd->pwd) + ft_strlen(folder) + 1));
-	path = ft_strcpy(path, struct_pwd->pwd);
-	path = ft_strcat(path, "/");
-	path = ft_strcat(path, folder);	
-	if (chdir(path))		
-		send(cs, "\033[32mSUCCESS\033[0m\n", 20, MSG_OOB);
+	if (chdir(folder) == 0)		
+		send(cs, "\033[32mSUCCESS\033[0m\n", 19, MSG_OOB);
 	else		
-		send(cs, "\033[31mERROR\033[0m\n", 18, MSG_OOB);
-	write(1, "test\n", 5);
+		send(cs, "\033[31mERROR\033[0m\n", 17, MSG_OOB);
 }
 
 void	cd(int cs, char *buf)
@@ -114,13 +105,12 @@ void	cd(int cs, char *buf)
 	tab = ft_strsplit(buf, ' ');
 	if (ft_strcmp(tab[0], "cd") != 0)
 	{	
-		send(cs, "\033[31mERROR\033[0m\n", 18, MSG_OOB);
+		send(cs, "\033[31mERROR\033[0m\n", 17, MSG_OOB);
 		free_tab(&tab);
 		return ;
 	}
 	if (tab[1] && ft_strcmp(tab[1], "..") != 0)
 		cd_folder(cs, tab[1]);
-//	send(cs, "SUCCESS", 7, MSG_OOB);
 	free_tab(&tab);
 }
 
@@ -179,7 +169,7 @@ void	pwd(int cs, char *buf, char **env)
 		free_tab(&tab);
 		return ;
 	}
-	send(cs, "\033[32mSUCCESS\033[0m\n", 20, MSG_OOB);
+	send(cs, "\033[32mSUCCESS\033[0m\n", 19, MSG_OOB);
 	boo = getcwd(buffer, 1024);
 	send(cs, boo, ft_strlen(boo) + 1, MSG_OOB);
 	send(cs, "\n", 2, MSG_OOB);
@@ -188,8 +178,9 @@ void	pwd(int cs, char *buf, char **env)
 
 void	quit(int cs, char *buf)
 {
-	(void)buf;
-	send(cs, "SUCCESS\n", 8, MSG_OOB);
+	(void)buf;	
+	send(cs, "\033[32mSUCCESS\033[0m\n", 19, MSG_OOB);
+	send(cs, NL, 2, MSG_OOB);
 }
 
 void	action(t_data *data, char **env)
@@ -208,11 +199,11 @@ void	action(t_data *data, char **env)
 		put(data->cs, data->buf);
 	else if (ft_strncmp(data->buf, "pwd", 3) == 0)
 		pwd(data->cs, data->buf, env);
-	else if (ft_strncmp(data->buf, "quit", 4) == 0)
+	else if (ft_strcmp(data->buf, "quit") == 0)
 		quit(data->cs, data->buf);
 	else
 		send(data->cs, "\033[31mERROR\033[0m\n", 17, MSG_OOB);
-	send(data->cs, END, 4, 0);
+	send(data->cs, END, 2, 0);
 	close(data->cs);
 }
 
