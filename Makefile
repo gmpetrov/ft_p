@@ -6,7 +6,7 @@
 #    By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/04/25 20:36:16 by gpetrov           #+#    #+#              #
-#    Updated: 2014/05/13 18:23:45 by gpetrov          ###   ########.fr        #
+#    Updated: 2014/05/16 17:27:05 by gpetrov          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ OBJS		= $(SRCS:client_dir/srcs/%.c=client_dir/.obj/%.o)
 OBJS2		= $(SRCS:serveur_dir/srcs/%.c=serveur_dir/.obj/%.o)
 INC			= -I client_dir/includes -I libft/includes
 INC2		= -I serveur_dir/includes -I libft/includes
-FLAGS		=  -Wall -Wextra -Werror -O3
+FLAGS		=  -Wall -Wextra -Werror -g
 LIB			= -L libft -lft
 
 all: $(NAME) $(NAME2)

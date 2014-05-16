@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:20:57 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/15 20:09:34 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/16 18:22:03 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,10 @@ void	ls(int cs, char *buf)
 		send(cs, "SUCCESS\n", 8, MSG_OOB);
 		dir = opendir(".");
 		while ((sd = readdir(dir)) != NULL)
+		{
 			send(cs, sd->d_name, ft_strlen(sd->d_name) + 1, MSG_OOB);
+			send(cs, "\n", 2, MSG_OOB);
+		}
 		closedir(dir);
 	}
 	else
@@ -164,9 +167,12 @@ char	*get_pwd(char **env)
 
 void	pwd(int cs, char *buf, char **env)
 {
-	t_pwd	*struct_pwd;
+//	t_pwd	*struct_pwd;
 	char	**tab;
+	char	buffer[1024];
+	char	*boo;
 
+	(void)env;
 	tab = ft_strsplit(buf, ' ');
 	if (ft_strcmp(tab[0], "pwd") != 0)
 	{
@@ -174,11 +180,16 @@ void	pwd(int cs, char *buf, char **env)
 		free_tab(&tab);
 		return ;
 	}
-	struct_pwd = pwd_init();	
+//	struct_pwd = pwd_init();	
 	send(cs, "SUCCESS\n", 8, MSG_OOB);
+	/*
 	if (!struct_pwd->pwd)
-		struct_pwd->pwd = get_pwd(env);
-	send(cs, struct_pwd->pwd, ft_strlen(struct_pwd->pwd) + 1, MSG_OOB);
+		struct_pwd->pwd = getcwd(buffer, 1024);
+		*/
+	boo = getcwd(buffer, 1024);
+//	send(cs, struct_pwd->pwd, ft_strlen(struct_pwd->pwd) + 1, MSG_OOB);
+	send(cs, boo, ft_strlen(boo) + 1, MSG_OOB);
+//	write(cs, struct_pwd->pwd, ft_strlen(struct_pwd->pwd));
 	free_tab(&tab);
 }
 
@@ -193,6 +204,7 @@ void	action(t_data *data, char **env)
 	data->r = read(data->cs, data->buf, 1023);	
 	data->buf[data->r - 1] = 0;
 	write(1, data->buf, data->r);
+	write(1, "\n", 1);
 	if (ft_strncmp(data->buf, "ls", 2) == 0)
 		ls(data->cs, data->buf);
 	else if (ft_strncmp(data->buf, "cd", 2) == 0)
