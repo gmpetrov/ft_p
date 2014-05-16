@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:19:58 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/16 20:53:11 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/16 22:40:44 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef struct			s_pwd
 
 typedef struct			s_data
 {
+	char				*limit;
 	int					cs;
 	unsigned int		cslen;
 	struct sockaddr_in	csin;
@@ -65,8 +66,8 @@ void	pwd(int cs, char *buf, char **env);
 /*
 **	cd.c
 */
-void	cd_folder(int cs, char *folder);
-void	cd(int cs, char *buf);
+void	cd_folder(int cs, char *limit, char *path);
+void	cd(int cs, char *buf, char *limit);
 
 /*
 **	ls.c

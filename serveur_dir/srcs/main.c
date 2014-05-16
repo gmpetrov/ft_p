@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:20:57 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/16 21:33:52 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/16 22:08:38 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	action(t_data *data, char **env)
 		if (ft_strncmp(data->buf, "ls", 2) == 0)
 			ls(data->cs, data->buf);
 		else if (ft_strncmp(data->buf, "cd", 2) == 0)
-			cd(data->cs, data->buf);
+			cd(data->cs, data->buf, data->limit);
 		else if (ft_strncmp(data->buf, "get", 3) == 0)
 			get(data->cs, data->buf);
 		else if	(ft_strncmp(data->buf, "put", 3) == 0)
@@ -109,6 +109,8 @@ int		main(int ac, char **av, char **env)
 	t_data				data;
 	int					port;
 	int					sock;
+	char				buf[1024];
+	
 
 	if (ac != 2)
 	{
@@ -118,6 +120,7 @@ int		main(int ac, char **av, char **env)
 	port = ft_atoi(av[1]);
 	sock = create_server(port);
 	mkdir("./MY_SERVER", 07777);
+	data.limit = getcwd(buf, 1023);	
 	//chdir("./MY_SERVER");
 	do_fork(data, env, sock);
 	close(data.cs);
