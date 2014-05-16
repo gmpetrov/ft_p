@@ -6,18 +6,10 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:20:57 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/16 20:35:54 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/16 21:03:52 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include<fcntl.h>
-#include<sys/stat.h>
-#include <dirent.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <sys/stat.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include "serveur.h"
 
 t_pwd	*pwd_init(void)
@@ -54,66 +46,6 @@ int		create_server(int port)
 	return (sock);	
 }
 
-void	free_tab(char ***tab)
-{
-	int		i;
-
-	i = 0;
-	while ((*tab)[++i])
-	{
-		free((*tab)[i]);
-		i++;
-	}
-	free(*tab);
-}
-
-void	ls(int cs, char *buf)
-{
-	char			**tab;
-	DIR				*dir;
-	struct dirent	*sd;
-	
-	tab = ft_strsplit(buf, ' ');
-	if (ft_strcmp(tab[0], "ls") == 0)
-	{
-		send(cs, "\033[32mSUCCESS\033[0m\n", 19, MSG_OOB);
-		dir = opendir(".");
-		while ((sd = readdir(dir)) != NULL)
-		{
-			send(cs, sd->d_name, ft_strlen(sd->d_name) + 1, MSG_OOB);
-			send(cs, "\n", 2, MSG_OOB);
-		}
-		closedir(dir);
-	}
-	else	
-		send(cs, "\033[31mERROR\033[0m\n", 17, MSG_OOB);
-	free_tab(&tab);
-}
-
-void	cd_folder(int cs, char *folder)
-{
-	if (chdir(folder) == 0)		
-		send(cs, "\033[32mSUCCESS\033[0m\n", 19, MSG_OOB);
-	else		
-		send(cs, "\033[31mERROR\033[0m\n", 17, MSG_OOB);
-}
-
-void	cd(int cs, char *buf)
-{
-	char	**tab;
-
-	tab = ft_strsplit(buf, ' ');
-	if (ft_strcmp(tab[0], "cd") != 0)
-	{	
-		send(cs, "\033[31mERROR\033[0m\n", 17, MSG_OOB);
-		free_tab(&tab);
-		return ;
-	}
-	if (tab[1] && ft_strcmp(tab[1], "..") != 0)
-		cd_folder(cs, tab[1]);
-	free_tab(&tab);
-}
-
 void	get(int cs, char *buf)
 {
 	(void)buf;
@@ -124,56 +56,6 @@ void	put(int cs, char *buf)
 {
 	(void)buf;
 	send(cs, "SUCCESS\n", 8, MSG_OOB);
-}
-
-char	*get_pwd(char **env)
-{
-	int		i;
-	char	*pwd;
-	int		j;
-	int		k;
-
-	i = 0;
-	j = 4;
-	k = 0;
-	while (env[i])
-	{
-		if (ft_strncmp(env[i], "PWD", 3) == 0)
-		{
-			pwd = (char *)malloc(sizeof(env[i]));
-			while (env[i][j] != 0)
-			{
-				pwd[k] = env[i][j];
-				k++;
-				j++;
-			}
-			pwd[k] = 0;
-			return (pwd);
-		}
-		i++;
-	}
-	return (NULL);
-}
-
-void	pwd(int cs, char *buf, char **env)
-{
-	char	**tab;
-	char	buffer[1024];
-	char	*boo;
-
-	(void)env;
-	tab = ft_strsplit(buf, ' ');
-	if (ft_strcmp(tab[0], "pwd") != 0)
-	{	
-		send(cs, "\033[31mERROR\033[0m\n", 17, MSG_OOB);
-		free_tab(&tab);
-		return ;
-	}
-	send(cs, "\033[32mSUCCESS\033[0m\n", 19, MSG_OOB);
-	boo = getcwd(buffer, 1024);
-	send(cs, boo, ft_strlen(boo) + 1, MSG_OOB);
-	send(cs, "\n", 2, MSG_OOB);
-	free_tab(&tab);
 }
 
 void	quit(int cs, char *buf)
@@ -204,7 +86,7 @@ void	action(t_data *data, char **env)
 	else
 		send(data->cs, "\033[31mERROR\033[0m\n", 17, MSG_OOB);
 	send(data->cs, END, 2, 0);
-	close(data->cs);
+//	close(data->cs);
 }
 
 int		main(int ac, char **av, char **env)
