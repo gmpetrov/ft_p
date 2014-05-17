@@ -55,6 +55,11 @@ int		main(int ac, char **av)
 		r = read(0, buf, 1023);
 		buf[r] = 0;
 		write(sock, buf, r);
+        if (ft_strcmp(buf, "quit\n") == 0)
+        {
+            ft_putstr("\033[32mSUCCESS\033[0m\n");
+            exit(0);
+        }
 		while ((t = recv(sock, buf, sizeof(buf), 0)) > 0)
 		{
 			buf[t] = 0;
