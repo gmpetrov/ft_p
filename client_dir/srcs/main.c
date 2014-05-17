@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:17:46 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/17 21:30:26 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/17 21:42:46 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,15 +103,15 @@ int		main(int ac, char **av)
 				g = 0;
 				break ;
 			}
-			if (g == 1)
-				write(ret, buf, t);
-			else
-				write(1, buf, t);
 			if (ft_strcmp(buf, GET) == 0)
 			{
 				g = 1;
 				ret = open(tab[1], O_RDWR | O_CREAT | O_EXCL, 07777);
 			}
+			if (g == 1)
+				write(ret, buf, t);
+			else
+				write(1, buf, t);
 		}
 		if (tab)
 			free_tab(&tab);
