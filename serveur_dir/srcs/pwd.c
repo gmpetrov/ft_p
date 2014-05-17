@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/16 20:42:17 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/16 23:03:10 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/17 18:12:14 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ void	pwd(int cs, char *buf, char **env)
 
 	(void)env;
 	tab = ft_strsplit(buf, ' ');
-	if (ft_strcmp(tab[0], "pwd") != 0 || (ft_strcmp(tab[0], "pwd") == 0 && tab[1]))
+	if (ft_strcmp(tab[0], "pwd") != 0 ||
+			(ft_strcmp(tab[0], "pwd") == 0 && tab[1]))
 	{
 		error_not_found(cs);
 		free_tab(&tab);
@@ -30,5 +31,6 @@ void	pwd(int cs, char *buf, char **env)
 	boo = getcwd(buffer, 1024);
 	send(cs, boo, ft_strlen(boo) + 1, MSG_OOB);
 	send(cs, "\n", 2, MSG_OOB);
-	free_tab(&tab);
+	if (tab)
+		free_tab(&tab);
 }

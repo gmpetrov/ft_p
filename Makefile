@@ -6,14 +6,14 @@
 #    By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/04/25 20:36:16 by gpetrov           #+#    #+#              #
-#    Updated: 2014/05/16 20:54:27 by gpetrov          ###   ########.fr        #
+#    Updated: 2014/05/17 18:47:07 by gpetrov          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		= client
 NAME2		= serveur
 FILES		= main.c
-FILES2		= main.c tools.c pwd.c cd.c ls.c
+FILES2		= main.c tools.c pwd.c cd.c ls.c get.c
 SRCS		= $(addprefix client_dir/srcs/, $(FILES))
 SRCS2	 	= $(addprefix serveur_dir/srcs/, $(FILES2))
 OBJS		= $(SRCS:client_dir/srcs/%.c=client_dir/.obj/%.o)

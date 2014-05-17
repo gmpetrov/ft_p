@@ -6,23 +6,11 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:20:57 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/16 23:30:55 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/17 21:26:38 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "serveur.h"
-
-t_pwd	*pwd_init(void)
-{
-	static t_pwd	*pwd = NULL;
-
-	if (pwd == NULL)
-	{
-		pwd = (t_pwd *)malloc(sizeof(t_pwd));
-		pwd->test = 1;
-	}
-	return (pwd);
-}
 
 int		create_server(int port)
 {
@@ -44,34 +32,21 @@ int		create_server(int port)
 		exit(0);
 	}
 	listen(sock, 42);
-	return (sock);	
-}
-
-void	get(int cs, char *buf)
-{
-	(void)buf;
-	send(cs, "SUCCESS\n", 8, MSG_OOB);
+	return (sock);
 }
 
 void	put(int cs, char *buf)
 {
-	(void)buf;
-	send(cs, "SUCCESS\n", 8, MSG_OOB);
-}
-
-void	quit(int cs, char *buf)
-{
 	(void)buf;	
 	send(cs, "\033[32mSUCCESS\033[0m\n", 19, MSG_OOB);
-	send(cs, NL, 2, MSG_OOB);
 }
 
 void	action(t_data *data, char **env)
 {
 	while (42)
 	{
-		data->r = read(data->cs, data->buf, 1023);	
-		data->buf[data->r - 1] = 0;
+		data->r = read(data->cs, data->buf, 1023);
+		data->buf[data->r] = 0;
 		write(1, data->buf, data->r);
 		write(1, "\n", 1);
 		if (ft_strncmp(data->buf, "ls", 2) == 0)
@@ -80,14 +55,14 @@ void	action(t_data *data, char **env)
 			cd(data->cs, data->buf, data->limit);
 		else if (ft_strncmp(data->buf, "get", 3) == 0)
 			get(data->cs, data->buf);
-		else if	(ft_strncmp(data->buf, "put", 3) == 0)
+		else if (ft_strncmp(data->buf, "put", 3) == 0)
 			put(data->cs, data->buf);
 		else if (ft_strncmp(data->buf, "pwd", 3) == 0)
 			pwd(data->cs, data->buf, env);
 		else if (ft_strcmp(data->buf, "quit") == 0)
 			quit(data->cs, data->buf);
 		else
-	        error_not_found(data->cs);
+			error_not_found(data->cs);
 		send(data->cs, END, 2, 0);
 	}
 }
@@ -99,7 +74,6 @@ void	do_fork(t_data data, char **env, int sock)
 		action(&data, env);
 	else
 		do_fork(data, env, sock);
-	
 }
 
 int		main(int ac, char **av, char **env)
@@ -108,7 +82,6 @@ int		main(int ac, char **av, char **env)
 	int					port;
 	int					sock;
 	char				buf[1024];
-	
 
 	if (ac != 2)
 	{
@@ -118,8 +91,7 @@ int		main(int ac, char **av, char **env)
 	port = ft_atoi(av[1]);
 	sock = create_server(port);
 	mkdir("./MY_SERVER", 07777);
-	data.limit = getcwd(buf, 1023);	
-	//chdir("./MY_SERVER");
+	data.limit = getcwd(buf, 1023);
 	do_fork(data, env, sock);
 	close(data.cs);
 	close(sock);
