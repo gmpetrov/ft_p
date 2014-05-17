@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:17:46 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/17 22:23:38 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/17 23:45:44 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,30 @@ void	dl_file(int sock, char *file, int t)
 	open(file, O_RDWR, O_CREAT, O_EXCL);
 }
 
+void	put(int sock, char *file)
+{	
+	int		ret;
+	char	buf[1024];
+	int		t;
+
+	ft_putstr(file);
+	write(sock, file, ft_strlen(file));
+	if ((ret = open(file, O_RDONLY)) < 0)
+	{
+		ft_putstr("\033[31mERROR\033[0m\n");
+		ft_putstr("File does not exist\n");
+		close(ret);
+		return ;
+	}
+	while ((t = read(ret, buf, 1023)) > 0)
+	{
+		buf[t] = 0;
+		write(sock, buf, t);
+	}
+	ft_putstr("\033[32mSUCCESS\033[0m\n");
+	close(ret);
+}
+
 int		main(int ac, char **av)
 {
 	int					port;
@@ -81,12 +105,17 @@ int		main(int ac, char **av)
 		r = read(0, buf, 1023);
 		buf[r - 1] = 0;
 		write(sock, buf, r);
-        if (ft_strcmp(buf, "quit\n") == 0)
+        if (ft_strcmp(buf, "quit") == 0)
         {
             ft_putstr("\033[32mSUCCESS\033[0m\n");
             exit(0);
         }
 		tab = ft_strsplit(buf, ' ');
+		if (ft_strcmp(tab[0], "put") == 0)
+		{
+			put(sock, tab[1]);
+			continue ;
+		}
 		while ((t = recv(sock, buf, sizeof(buf), 0)) > 0)
 		{
 			buf[t] = 0;

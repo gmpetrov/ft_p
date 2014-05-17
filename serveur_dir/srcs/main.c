@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:20:57 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/17 21:26:38 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/17 23:35:15 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,24 @@ int		create_server(int port)
 	return (sock);
 }
 
-void	put(int cs, char *buf)
+void	put(int cs, char *data)
 {
-	(void)buf;	
-	send(cs, "\033[32mSUCCESS\033[0m\n", 19, MSG_OOB);
+	int		ret;
+	char	buf[1024];
+	int		r;
+	char	**tab;
+
+	tab = ft_strsplit(data, ' ');
+	ret = open(tab[1], O_RDWR | O_CREAT | O_EXCL, 07777);
+	while ((r = read(cs, buf, 1023)) > 0)
+	{
+		buf[r] = 0;
+		write(ret, buf, r);
+	}
+	close(ret);
+	if (tab)
+		free_tab(&tab);
+//	send(cs, "\033[32mSUCCESS\033[0m\n", 19, MSG_OOB);
 }
 
 void	action(t_data *data, char **env)
