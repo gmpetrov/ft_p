@@ -111,7 +111,7 @@ int		main(int ac, char **av)
             exit(0);
         }
 		tab = ft_strsplit(buf, ' ');
-		if (ft_strcmp(tab[0], "put") == 0)
+		if (tab[0] && ft_strcmp(tab[0], "put") == 0)
 		{
 			put(sock, tab[1]);
 			continue ;
