@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/13 18:20:57 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/17 23:35:15 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/18 22:46:42 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ void	put(int cs, char *data)
 	close(ret);
 	if (tab)
 		free_tab(&tab);
-//	send(cs, "\033[32mSUCCESS\033[0m\n", 19, MSG_OOB);
 }
 
 void	action(t_data *data, char **env)
@@ -67,10 +66,6 @@ void	action(t_data *data, char **env)
 			ls(data->cs, data->buf);
 		else if (ft_strncmp(data->buf, "cd", 2) == 0)
 			cd(data->cs, data->buf, data->limit);
-		else if (ft_strncmp(data->buf, "get", 3) == 0)
-			get(data->cs, data->buf);
-		else if (ft_strncmp(data->buf, "put", 3) == 0)
-			put(data->cs, data->buf);
 		else if (ft_strncmp(data->buf, "pwd", 3) == 0)
 			pwd(data->cs, data->buf, env);
 		else if (ft_strcmp(data->buf, "quit") == 0)
@@ -104,7 +99,6 @@ int		main(int ac, char **av, char **env)
 	}
 	port = ft_atoi(av[1]);
 	sock = create_server(port);
-	mkdir("./MY_SERVER", 07777);
 	data.limit = getcwd(buf, 1023);
 	do_fork(data, env, sock);
 	close(data.cs);

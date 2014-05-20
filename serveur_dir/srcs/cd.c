@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/16 20:46:33 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/17 18:10:08 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/18 22:42:01 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	cd_folder(int cs, char *limit, char *path)
 	if (chdir(path) != 0)
 	{
 		send(cs, "\033[31mERROR\033[0m\n", 17, MSG_OOB);
+		send(cs, "Not Possible\n", 14, MSG_OOB);
 		return ;
 	}
 	pwd = getcwd(buf, 1023);
@@ -29,6 +30,7 @@ void	cd_folder(int cs, char *limit, char *path)
 	{
 		chdir(limit);
 		send(cs, "\033[31mERROR\033[0m\n", 17, MSG_OOB);
+		send(cs, "Out of bound\n", 14, MSG_OOB);
 	}
 }
 
@@ -40,6 +42,7 @@ void	cd(int cs, char *buf, char *limit)
 	if (ft_strcmp(tab[0], "cd") != 0)
 	{
 		send(cs, "\033[31mERROR\033[0m\n", 17, MSG_OOB);
+		send(cs, "Command not Found\n", 19, MSG_OOB);
 		free_tab(&tab);
 		return ;
 	}

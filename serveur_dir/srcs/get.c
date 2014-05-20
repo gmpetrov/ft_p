@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/05/17 18:46:38 by gpetrov           #+#    #+#             */
-/*   Updated: 2014/05/17 23:30:54 by gpetrov          ###   ########.fr       */
+/*   Updated: 2014/05/18 22:44:41 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	get(int cs, char *buf)
 {
 	char	**tab;
 
-	tab = ft_strsplit(buf, ' ');	
+	tab = ft_strsplit(buf, ' ');
 	if ((ft_strcmp(tab[0], "get") != 0) ||
 			(ft_strcmp(tab[0], "get") == 0 && !tab[1]))
 	{
